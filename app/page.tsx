@@ -145,7 +145,8 @@ export default function Home() {
         {[...Array(90)].map((_, i) => {
           // Better distributed particles across the entire screen
           const safeMargin = 8;
-          let randomX, randomY;
+          let randomX: number = 50; // Default center position
+          let randomY: number = 50; // Default center position
           
           // Distribute particles more evenly: 40% corners, 30% edges, 30% center area
           const distribution = i % 10;

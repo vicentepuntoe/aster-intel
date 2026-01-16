@@ -188,12 +188,3 @@ body {
     box-shadow: 0 0 5px rgba(109, 118, 235, 0.12), 0 0 10px rgba(83, 213, 232, 0.08);
   }
 }
-
-@keyframes gradientGlowSubtle {
-  0%, 100% {
-    box-shadow: 0 0 5px rgba(109, 118, 235, 0.1), 0 0 10px rgba(83, 213, 232, 0.08);
-  }
-  50% {
-    box-shadow: 0 0 8px rgba(109, 118, 235, 0.15), 0 0 15px rgba(83, 213, 232, 0.12);
-  }
-}

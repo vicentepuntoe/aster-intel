@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo, memo } from 'react';
 import {
   Brain,
   TrendingUp,
@@ -24,56 +24,17 @@ import {
   LineChart,
 } from 'lucide-react';
 
-// Component for rotating icons with smooth transitions (saved for reference)
-function IconRotator() {
-  const icons = [
-    { Icon: TrendingUp, name: 'trending' },
-    { Icon: Activity, name: 'activity' },
-    { Icon: BarChart3, name: 'chart' },
-    { Icon: Heart, name: 'heart' },
-    { Icon: Pill, name: 'pill' },
-    { Icon: Microscope, name: 'microscope' },
-    { Icon: LineChart, name: 'line-chart' },
-    { Icon: Brain, name: 'brain' },
-  ];
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [isVisible, setIsVisible] = useState(true);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setIsVisible(false);
-      setTimeout(() => {
-        setCurrentIndex((prev) => (prev + 1) % icons.length);
-        setTimeout(() => {
-          setIsVisible(true);
-        }, 50);
-      }, 500);
-    }, 3000);
-
-    return () => clearInterval(interval);
-  }, [icons.length]);
-
-  const CurrentIcon = icons[currentIndex].Icon;
-
-  return (
-    <div className="relative w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 flex items-center justify-center">
-      <div
-        className="absolute inset-0 flex items-center justify-center"
-        style={{
-          opacity: isVisible ? 1 : 0,
-          transform: isVisible ? 'scale(1) rotate(0deg)' : 'scale(0.85) rotate(-5deg)',
-          transition: 'opacity 0.6s cubic-bezier(0.4, 0, 0.2, 1), transform 0.6s cubic-bezier(0.4, 0, 0.2, 1)',
-        }}
-      >
-        <CurrentIcon className="w-12 h-12 md:w-16 md:h-16 lg:w-20 lg:h-20 text-white" />
-      </div>
-    </div>
-  );
-}
+// Constants for repeated values
+const GRADIENT_TEXT = 'radial-gradient(circle at 90% 50%, rgb(109, 118, 235), rgb(83, 213, 232) 25%, rgb(90, 189, 233) 47%, rgb(121, 76, 236) 93%)';
+const BUTTON_GRADIENT = 'linear-gradient(135deg, rgb(109, 118, 235), rgb(83, 213, 232) 25%, rgb(90, 189, 233) 47%, rgb(121, 76, 236) 93%)';
+const BUTTON_ANIMATION = 'gradientShiftSlow 6s ease infinite, gradientGlowSubtle 4s ease-in-out infinite';
+const DARK_BG = '#00152E';
+const TEXT_DARK = '#00152E';
+const TEXT_GRAY = '#374151';
 
 // Simple and smooth Decision Intelligence animation
-function DecisionIntelligenceAnimation() {
-  const icons = [Brain, TrendingUp, BarChart3, Activity, LineChart];
+const DecisionIntelligenceAnimation = memo(function DecisionIntelligenceAnimation() {
+  const icons = useMemo(() => [Brain, TrendingUp, BarChart3, Activity, LineChart], []);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isVisible, setIsVisible] = useState(true);
 
@@ -127,7 +88,7 @@ function DecisionIntelligenceAnimation() {
       </div>
     </div>
   );
-}
+});
 
 export default function Home() {
   return (
@@ -136,106 +97,119 @@ export default function Home() {
       <section 
         className="relative overflow-hidden flex items-center" 
         style={{ 
-          backgroundColor: '#00152E',
+          backgroundColor: DARK_BG,
           minHeight: 'calc(100vh - 20px)',
           height: 'calc(100vh - 20px)',
         }}
       >
         {/* Floating particles - subtle and elegant, well distributed */}
-        {[...Array(90)].map((_, i) => {
-          // Better distributed particles across the entire screen
+        {useMemo(() => {
+          const particleCount = 90;
           const safeMargin = 8;
-          let randomX: number = 50; // Default center position
-          let randomY: number = 50; // Default center position
+          const particles = [];
           
-          // Distribute particles more evenly: 40% corners, 30% edges, 30% center area
-          const distribution = i % 10;
-          
-          if (distribution < 4) {
-            // Corner particles (40%) - evenly distributed across 4 corners
-            const corner = i % 4;
-            const cornerMargin = 5;
-            const cornerSpread = 20; // Wider spread in corners
+          // Pre-calculate particle positions for better performance
+          for (let i = 0; i < particleCount; i++) {
+            let randomX: number = 50;
+            let randomY: number = 50;
+            const distribution = i % 10;
             
-            switch(corner) {
-              case 0: // Top-left
-                randomX = cornerMargin + Math.random() * cornerSpread;
-                randomY = cornerMargin + Math.random() * cornerSpread;
-                break;
-              case 1: // Top-right
-                randomX = 100 - cornerMargin - Math.random() * cornerSpread;
-                randomY = cornerMargin + Math.random() * cornerSpread;
-                break;
-              case 2: // Bottom-left
-                randomX = cornerMargin + Math.random() * cornerSpread;
-                randomY = 100 - cornerMargin - Math.random() * cornerSpread;
-                break;
-              case 3: // Bottom-right
-                randomX = 100 - cornerMargin - Math.random() * cornerSpread;
-                randomY = 100 - cornerMargin - Math.random() * cornerSpread;
-                break;
+            if (distribution < 4) {
+              const corner = i % 4;
+              const cornerMargin = 5;
+              const cornerSpread = 20;
+              
+              switch(corner) {
+                case 0:
+                  randomX = cornerMargin + Math.random() * cornerSpread;
+                  randomY = cornerMargin + Math.random() * cornerSpread;
+                  break;
+                case 1:
+                  randomX = 100 - cornerMargin - Math.random() * cornerSpread;
+                  randomY = cornerMargin + Math.random() * cornerSpread;
+                  break;
+                case 2:
+                  randomX = cornerMargin + Math.random() * cornerSpread;
+                  randomY = 100 - cornerMargin - Math.random() * cornerSpread;
+                  break;
+                case 3:
+                  randomX = 100 - cornerMargin - Math.random() * cornerSpread;
+                  randomY = 100 - cornerMargin - Math.random() * cornerSpread;
+                  break;
+              }
+            } else if (distribution < 7) {
+              const edge = i % 4;
+              const edgeMargin = 10;
+              
+              switch(edge) {
+                case 0:
+                  randomX = edgeMargin + Math.random() * (100 - edgeMargin * 2);
+                  randomY = edgeMargin + Math.random() * 15;
+                  break;
+                case 1:
+                  randomX = 100 - edgeMargin - Math.random() * 15;
+                  randomY = edgeMargin + Math.random() * (100 - edgeMargin * 2);
+                  break;
+                case 2:
+                  randomX = edgeMargin + Math.random() * (100 - edgeMargin * 2);
+                  randomY = 100 - edgeMargin - Math.random() * 15;
+                  break;
+                case 3:
+                  randomX = edgeMargin + Math.random() * 15;
+                  randomY = edgeMargin + Math.random() * (100 - edgeMargin * 2);
+                  break;
+              }
+            } else {
+              const centerX = 50;
+              const centerY = 50;
+              const minRadius = 15;
+              const maxRadius = 35;
+              const angle = (i * 137.508) % 360;
+              const radius = minRadius + Math.random() * (maxRadius - minRadius);
+              randomX = centerX + Math.cos((angle * Math.PI) / 180) * radius;
+              randomY = centerY + Math.sin((angle * Math.PI) / 180) * radius;
             }
-          } else if (distribution < 7) {
-            // Edge particles (30%) - distributed along edges
-            const edge = (i % 4);
-            const edgeMargin = 10;
             
-            switch(edge) {
-              case 0: // Top edge
-                randomX = edgeMargin + Math.random() * (100 - edgeMargin * 2);
-                randomY = edgeMargin + Math.random() * 15;
-                break;
-              case 1: // Right edge
-                randomX = 100 - edgeMargin - Math.random() * 15;
-                randomY = edgeMargin + Math.random() * (100 - edgeMargin * 2);
-                break;
-              case 2: // Bottom edge
-                randomX = edgeMargin + Math.random() * (100 - edgeMargin * 2);
-                randomY = 100 - edgeMargin - Math.random() * 15;
-                break;
-              case 3: // Left edge
-                randomX = edgeMargin + Math.random() * 15;
-                randomY = edgeMargin + Math.random() * (100 - edgeMargin * 2);
-                break;
-            }
-          } else {
-            // Center area particles (30%) - distributed in a wider area
-            const centerX = 50;
-            const centerY = 50;
-            const minRadius = 15; // Closer to center
-            const maxRadius = 35; // Wider distribution
-            const angle = (i * 137.508) % 360; // Golden angle for better distribution
-            const radius = minRadius + Math.random() * (maxRadius - minRadius);
-            randomX = centerX + Math.cos((angle * Math.PI) / 180) * radius;
-            randomY = centerY + Math.sin((angle * Math.PI) / 180) * radius;
+            const size = 2 + (i % 4);
+            const halfSize = size / 2;
+            const safeX = Math.max(safeMargin, Math.min(100 - safeMargin, randomX));
+            const safeY = Math.max(safeMargin, Math.min(100 - safeMargin, randomY));
+            const colorIndex = i % 3;
+            const colorRgb = colorIndex === 0 ? '109, 118, 235' : colorIndex === 1 ? '83, 213, 232' : '121, 76, 236';
+            const opacity = 0.3 + colorIndex * 0.1;
+            
+            particles.push({
+              key: `hero-particle-${i}`,
+              size,
+              halfSize,
+              safeX,
+              safeY,
+              colorRgb,
+              opacity,
+              animationDuration: 4 + (i % 5) * 0.8,
+              animationDelay: (i * 0.15) % 5,
+            });
           }
           
-          const size = 2 + (i % 4); // Smaller, more subtle particles
-          const halfSize = size / 2;
-          
-          // Calculate safe position ensuring particle stays within bounds
-          const safeX = Math.max(safeMargin, Math.min(100 - safeMargin, randomX));
-          const safeY = Math.max(safeMargin, Math.min(100 - safeMargin, randomY));
-          
-          return (
-            <div
-              key={`hero-particle-${i}`}
-              className="absolute rounded-full pointer-events-none"
-              style={{
-                width: `${size}px`,
-                height: `${size}px`,
-                background: `radial-gradient(circle at 30% 30%, rgba(${i % 3 === 0 ? '109, 118, 235' : i % 3 === 1 ? '83, 213, 232' : '121, 76, 236'}, ${0.3 + (i % 3) * 0.1}), rgba(${i % 3 === 0 ? '109, 118, 235' : i % 3 === 1 ? '83, 213, 232' : '121, 76, 236'}, 0.05))`,
-                top: `calc(${safeY}% - ${halfSize}px)`,
-                left: `calc(${safeX}% - ${halfSize}px)`,
-                boxShadow: `0 0 ${size * 2}px rgba(${i % 3 === 0 ? '109, 118, 235' : i % 3 === 1 ? '83, 213, 232' : '121, 76, 236'}, 0.25)`,
-                animation: `particleFloatSmooth ${4 + (i % 5) * 0.8}s ease-in-out infinite`,
-                animationDelay: `${(i * 0.15) % 5}s`,
-                willChange: 'transform, opacity',
-                filter: 'blur(0.3px)',
-              }}
-            ></div>
-          );
-        })}
+          return particles;
+        }, []).map((particle) => (
+          <div
+            key={particle.key}
+            className="absolute rounded-full pointer-events-none"
+            style={{
+              width: `${particle.size}px`,
+              height: `${particle.size}px`,
+              background: `radial-gradient(circle at 30% 30%, rgba(${particle.colorRgb}, ${particle.opacity}), rgba(${particle.colorRgb}, 0.05))`,
+              top: `calc(${particle.safeY}% - ${particle.halfSize}px)`,
+              left: `calc(${particle.safeX}% - ${particle.halfSize}px)`,
+              boxShadow: `0 0 ${particle.size * 2}px rgba(${particle.colorRgb}, 0.25)`,
+              animation: `particleFloatSmooth ${particle.animationDuration}s ease-in-out infinite`,
+              animationDelay: `${particle.animationDelay}s`,
+              willChange: 'transform, opacity',
+              filter: 'blur(0.3px)',
+            }}
+          />
+        ))}
         
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10 w-full">
           <div className="max-w-7xl mx-auto">
@@ -257,7 +231,7 @@ export default function Home() {
                     style={{
                       display: 'block',
                       lineHeight: '1.1',
-                      backgroundImage: 'radial-gradient(circle at 90% 50%, rgb(109, 118, 235), rgb(83, 213, 232) 25%, rgb(90, 189, 233) 47%, rgb(121, 76, 236) 93%)',
+                      backgroundImage: GRADIENT_TEXT,
                       WebkitBackgroundClip: 'text',
                       backgroundClip: 'text',
                       WebkitTextFillColor: 'transparent',
@@ -290,9 +264,9 @@ export default function Home() {
                     href="/about/contact"
                     className="px-8 py-4 rounded-lg font-semibold text-white transition-all shadow-lg hover:scale-105 text-lg flex items-center gap-2 relative overflow-hidden"
                     style={{
-                      background: 'linear-gradient(135deg, rgb(109, 118, 235), rgb(83, 213, 232) 25%, rgb(90, 189, 233) 47%, rgb(121, 76, 236) 93%)',
+                      background: BUTTON_GRADIENT,
                       backgroundSize: '200% 200%',
-                      animation: 'gradientShiftSlow 6s ease infinite, gradientGlowSubtle 4s ease-in-out infinite',
+                      animation: BUTTON_ANIMATION,
                     }}
                   >
                     <span className="relative z-10">Request a Demo</span>
@@ -341,7 +315,7 @@ export default function Home() {
             <div className="bg-gray-50 rounded-2xl p-8 md:p-12 shadow-xl border border-gray-200">
               <p 
                 className="text-lg md:text-xl leading-relaxed text-center"
-                style={{ color: '#374151' }}
+                style={{ color: TEXT_GRAY }}
               >
                 MedTech investment decisions require deep analysis of complex scientific data, regulatory
                 landscapes, and market dynamics. Traditional research methods struggle to keep pace with
@@ -393,7 +367,7 @@ export default function Home() {
                 </h3>
                 <p 
                   className="leading-relaxed"
-                  style={{ color: '#374151' }}
+                  style={{ color: TEXT_GRAY }}
                 >
                   Leveraging state-of-the-art AI models for deep analysis of scientific literature,
                   clinical data, and market intelligence.
@@ -417,7 +391,7 @@ export default function Home() {
                 </h3>
                 <p 
                   className="leading-relaxed"
-                  style={{ color: '#374151' }}
+                  style={{ color: TEXT_GRAY }}
                 >
                   Institutional knowledge base that captures and applies insights from past
                   investments and industry patterns.
@@ -441,7 +415,7 @@ export default function Home() {
                 </h3>
                 <p 
                   className="leading-relaxed"
-                  style={{ color: '#374151' }}
+                  style={{ color: TEXT_GRAY }}
                 >
                   Verified human insight integrated throughout the analysis process to ensure
                   accuracy and strategic context.
@@ -482,7 +456,7 @@ export default function Home() {
                 <h3 
                   className="text-xl mb-3" 
                   style={{ 
-                    color: '#00152E', 
+                    color: TEXT_DARK, 
                     fontWeight: 800,
                     fontFamily: 'Montserrat, sans-serif',
                   }}
@@ -502,7 +476,7 @@ export default function Home() {
                 <h3 
                   className="text-xl mb-3" 
                   style={{ 
-                    color: '#00152E', 
+                    color: TEXT_DARK, 
                     fontWeight: 800,
                     fontFamily: 'Montserrat, sans-serif',
                   }}
@@ -522,7 +496,7 @@ export default function Home() {
                 <h3 
                   className="text-xl mb-3" 
                   style={{ 
-                    color: '#00152E', 
+                    color: TEXT_DARK, 
                     fontWeight: 800,
                     fontFamily: 'Montserrat, sans-serif',
                   }}
@@ -542,7 +516,7 @@ export default function Home() {
                 <h3 
                   className="text-xl mb-3" 
                   style={{ 
-                    color: '#00152E', 
+                    color: TEXT_DARK, 
                     fontWeight: 800,
                     fontFamily: 'Montserrat, sans-serif',
                   }}
@@ -562,7 +536,7 @@ export default function Home() {
                 <h3 
                   className="text-xl mb-3" 
                   style={{ 
-                    color: '#00152E', 
+                    color: TEXT_DARK, 
                     fontWeight: 800,
                     fontFamily: 'Montserrat, sans-serif',
                   }}
@@ -605,7 +579,7 @@ export default function Home() {
                   <h4 
                     className="mb-2" 
                     style={{ 
-                      color: '#00152E', 
+                      color: TEXT_DARK, 
                       fontWeight: 800,
                       fontFamily: 'Montserrat, sans-serif',
                     }}
@@ -623,7 +597,7 @@ export default function Home() {
                   <h4 
                     className="mb-2" 
                     style={{ 
-                      color: '#00152E', 
+                      color: TEXT_DARK, 
                       fontWeight: 800,
                       fontFamily: 'Montserrat, sans-serif',
                     }}
@@ -641,7 +615,7 @@ export default function Home() {
                   <h4 
                     className="mb-2" 
                     style={{ 
-                      color: '#00152E', 
+                      color: TEXT_DARK, 
                       fontWeight: 800,
                       fontFamily: 'Montserrat, sans-serif',
                     }}
@@ -659,7 +633,7 @@ export default function Home() {
                   <h4 
                     className="mb-2" 
                     style={{ 
-                      color: '#00152E', 
+                      color: TEXT_DARK, 
                       fontWeight: 800,
                       fontFamily: 'Montserrat, sans-serif',
                     }}
@@ -712,7 +686,7 @@ export default function Home() {
                 </h3>
                 <p 
                   className="text-sm"
-                  style={{ color: '#374151' }}
+                  style={{ color: TEXT_GRAY }}
                 >
                   Complete data separation and privacy protection
                 </p>
@@ -729,7 +703,7 @@ export default function Home() {
                 </h3>
                 <p 
                   className="text-sm"
-                  style={{ color: '#374151' }}
+                  style={{ color: TEXT_GRAY }}
                 >
                   Enterprise identity and access management
                 </p>
@@ -746,7 +720,7 @@ export default function Home() {
                 </h3>
                 <p 
                   className="text-sm"
-                  style={{ color: '#374151' }}
+                  style={{ color: TEXT_GRAY }}
                 >
                   Complete audit trails and compliance tracking
                 </p>
@@ -776,7 +750,7 @@ export default function Home() {
             <div className="bg-white rounded-2xl p-8 md:p-10 shadow-lg border border-gray-200">
               <p 
                 className="text-xl leading-relaxed mb-6"
-                style={{ color: '#374151' }}
+                style={{ color: TEXT_GRAY }}
               >
                 Aster Intel is designed for MedTech investors, corporate strategy teams, and investment
                 committees who need faster, more informed decision-making backed by comprehensive

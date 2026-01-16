@@ -2,10 +2,10 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback, memo } from 'react';
 import { Menu, X, ChevronDown } from 'lucide-react';
 
-export default function Header() {
+function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAboutDropdownOpen, setIsAboutDropdownOpen] = useState(false);
   const dropdownTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -13,28 +13,35 @@ export default function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const lastScrollY = useRef(0);
+  const ticking = useRef(false);
+
+  const handleScroll = useCallback(() => {
+    if (!ticking.current) {
+      window.requestAnimationFrame(() => {
+        const scrollPosition = window.scrollY;
+        const scrollDifference = scrollPosition - lastScrollY.current;
+        
+        // Change header style after scrolling past hero section (approximately 600px)
+        setIsScrolled(scrollPosition > 600);
+        
+        // Hide navbar when scrolling down more than 200px, show when scrolling up
+        if (scrollDifference > 0 && scrollPosition > 200) {
+          setIsVisible(false);
+        } else if (scrollDifference < 0) {
+          setIsVisible(true);
+        }
+        
+        lastScrollY.current = scrollPosition;
+        ticking.current = false;
+      });
+      ticking.current = true;
+    }
+  }, []);
 
   useEffect(() => {
-    const handleScroll = () => {
-      const scrollPosition = window.scrollY;
-      const scrollDifference = scrollPosition - lastScrollY.current;
-      
-      // Change header style after scrolling past hero section (approximately 600px)
-      setIsScrolled(scrollPosition > 600);
-      
-      // Hide navbar when scrolling down more than 200px, show when scrolling up
-      if (scrollDifference > 0 && scrollPosition > 200) {
-        setIsVisible(false);
-      } else if (scrollDifference < 0) {
-        setIsVisible(true);
-      }
-      
-      lastScrollY.current = scrollPosition;
-    };
-
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  }, [handleScroll]);
 
   return (
     <header 
@@ -216,3 +223,5 @@ export default function Header() {
     </header>
   );
 }
+
+export default memo(Header);

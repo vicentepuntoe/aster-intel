@@ -1,0 +1,199 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap');
+
+:root {
+  --foreground-rgb: 0, 22, 47;
+  --background-rgb: 22, 33, 62; /* Dark blue-gray background */
+}
+
+* {
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background: #00152E; /* Dark blue background */
+  font-family:
+    'Inter',
+    system-ui,
+    -apple-system,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin 20s linear infinite;
+}
+
+.animate-spin-reverse {
+  animation: spin 15s linear infinite reverse;
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes nodePulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.8;
+  }
+}
+
+@keyframes linePulse {
+  0%, 100% {
+    opacity: 0.2;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes orbit {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) translateX(45%) rotate(0deg);
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) translateX(45%) rotate(-360deg);
+  }
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.5;
+  }
+  15% {
+    transform: translate(6px, -10px) scale(1.1);
+    opacity: 0.7;
+  }
+  30% {
+    transform: translate(-5px, -18px) scale(1.15);
+    opacity: 0.9;
+  }
+  45% {
+    transform: translate(8px, -6px) scale(1.05);
+    opacity: 0.8;
+  }
+  60% {
+    transform: translate(-4px, -14px) scale(1.1);
+    opacity: 0.75;
+  }
+  75% {
+    transform: translate(7px, -8px) scale(1.05);
+    opacity: 0.65;
+  }
+  90% {
+    transform: translate(-3px, -12px) scale(1);
+    opacity: 0.55;
+  }
+}
+
+@keyframes particleFloatSmooth {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+    opacity: 0.3;
+  }
+  25% {
+    transform: translate(4px, -8px) scale(1.05);
+    opacity: 0.5;
+  }
+  50% {
+    transform: translate(-3px, -12px) scale(1.08);
+    opacity: 0.6;
+  }
+  75% {
+    transform: translate(5px, -5px) scale(1.03);
+    opacity: 0.45;
+  }
+}
+
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientShiftSlow {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes gradientGlow {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(109, 118, 235, 0.1), 0 0 10px rgba(83, 213, 232, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(109, 118, 235, 0.15), 0 0 15px rgba(83, 213, 232, 0.12);
+  }
+}
+
+@keyframes gradientGlowSubtle {
+  0%, 100% {
+    box-shadow: 0 0 3px rgba(109, 118, 235, 0.08), 0 0 6px rgba(83, 213, 232, 0.05);
+  }
+  50% {
+    box-shadow: 0 0 5px rgba(109, 118, 235, 0.12), 0 0 10px rgba(83, 213, 232, 0.08);
+  }
+}
+
+@keyframes gradientGlowSubtle {
+  0%, 100% {
+    box-shadow: 0 0 5px rgba(109, 118, 235, 0.1), 0 0 10px rgba(83, 213, 232, 0.08);
+  }
+  50% {
+    box-shadow: 0 0 8px rgba(109, 118, 235, 0.15), 0 0 15px rgba(83, 213, 232, 0.12);
+  }
+}
